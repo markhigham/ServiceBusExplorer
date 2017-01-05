@@ -22,5 +22,17 @@ namespace Microsoft.WindowsAzure.CAT.ServiceBusExplorer.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PreviousConnectionString {
+            get {
+                return ((string)(this["PreviousConnectionString"]));
+            }
+            set {
+                this["PreviousConnectionString"] = value;
+            }
+        }
     }
 }

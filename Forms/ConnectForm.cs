@@ -86,7 +86,7 @@ namespace Microsoft.WindowsAzure.CAT.ServiceBusExplorer
             if (serviceBusHelper.ServiceBusNamespaces != null)
             {
                 // ReSharper disable CoVariantArrayConversion
-                cboServiceBusNamespace.Items.AddRange(serviceBusHelper.ServiceBusNamespaces.Keys.OrderBy(s=>s).ToArray());
+                cboServiceBusNamespace.Items.AddRange(serviceBusHelper.ServiceBusNamespaces.Keys.OrderBy(s => s).ToArray());
                 // ReSharper restore CoVariantArrayConversion
             }
 
@@ -164,7 +164,7 @@ namespace Microsoft.WindowsAzure.CAT.ServiceBusExplorer
 
             if (cboServiceBusNamespace.Text == EnterConnectionString || connectionStringType == ServiceBusNamespaceType.OnPremises || containsStsEndpoint)
             {
-                ConnectionString = txtUri.Text.Trim();
+                ConnectionString = txtUri.Text;
                 if (string.IsNullOrWhiteSpace(ConnectionString))
                 {
                     MainForm.StaticWriteToLog(ConnectionStringCannotBeNull);
@@ -207,6 +207,9 @@ namespace Microsoft.WindowsAzure.CAT.ServiceBusExplorer
             {
                 connectionString = txtUri.Text;
             }
+
+            Properties.Settings.Default.PreviousConnectionString = connectionString;
+            Properties.Settings.Default.Save();
         }
 
         private void validation_TextChanged(object sender, EventArgs e)
@@ -275,8 +278,9 @@ namespace Microsoft.WindowsAzure.CAT.ServiceBusExplorer
                 lblUri.Text = ConnectionStringLabel;
                 txtUri.Multiline = true;
                 txtUri.Size = new Size(336, 168);
-                txtUri.Text = string.Empty;
+                txtUri.Text = Properties.Settings.Default.PreviousConnectionString;
                 toolTip.SetToolTip(txtUri, ConnectionStringTooltip);
+                validation_TextChanged(sender, e);
             }
             else
             {
@@ -482,5 +486,11 @@ namespace Microsoft.WindowsAzure.CAT.ServiceBusExplorer
                                      cboTransportType.Size.Height + 1);
         }
         #endregion
+
+        private void ConnectForm_Load(object sender, EventArgs e)
+        {
+            var connection = Properties.Settings.Default.PreviousConnectionString;
+            txtUri.Text = connection;
+        }
     }
 }
